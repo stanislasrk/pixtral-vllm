@@ -20,10 +20,10 @@ RUN apt-get update && \
 # Install Python packages
 RUN pip3 install --upgrade pip && \
     pip3 install \
+        --extra-index-url https://download.pytorch.org/whl/cu118 \
         numpy \
         torch==2.0.1+cu118 \
         torchvision==0.15.2+cu118 \
-        --extra-index-url https://download.pytorch.org/whl/cu118 \
         transformers \
         huggingface_hub \
         vllm \
