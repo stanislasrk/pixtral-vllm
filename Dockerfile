@@ -6,10 +6,12 @@ RUN apt-get update && apt-get install -y \
     git \
     python3-pip \
     wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Git LFS
-RUN wget -q https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh && \
+RUN apt-get update && \
+    wget -q https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh && \
     bash script.deb.sh && \
     apt-get install -y git-lfs && \
     git lfs install && \
