@@ -1,5 +1,5 @@
-# Base image with CUDA and cuDNN support
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+# Base image with CUDA and cuDNN support (development version)
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 # Install system packages
 RUN apt-get update && apt-get install -y \
@@ -17,13 +17,13 @@ RUN apt-get update && \
     git lfs install && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python packages with specific versions
+# Install Python packages
 RUN pip3 install --upgrade pip && \
     pip3 install \
         numpy \
-        torch==1.13.1+cu116 \
-        torchvision==0.14.1+cu116 \
-        --extra-index-url https://download.pytorch.org/whl/cu116 \
+        torch==2.0.1+cu118 \
+        torchvision==0.15.2+cu118 \
+        --extra-index-url https://download.pytorch.org/whl/cu118 \
         transformers \
         huggingface_hub \
         vllm \
