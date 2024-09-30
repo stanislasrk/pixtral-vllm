@@ -1,16 +1,25 @@
 # Base image with CUDA and cuDNN support (development version)
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
-# Install system packages and Git LFS in a single RUN command
+# Install system packages, Git LFS, and Docker CLI in a single RUN command
 RUN apt-get update && apt-get install -y \
     git \
     python3-pip \
     wget \
     curl \
+    apt-transport-https \
+    ca-certificates \
+    gnupg \
+    lsb-release \
     && wget -q https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh \
     && bash script.deb.sh \
     && apt-get install -y git-lfs \
     && git lfs install \
+    # Install Docker CLI
+    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && apt-get update \
+    && apt-get install -y docker-ce-cli \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
