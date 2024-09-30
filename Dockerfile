@@ -4,10 +4,11 @@ FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as builder
 # Install system packages and Python
 RUN apt-get update && apt-get install -y \
     python3-pip \
+    python3-dev \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install packages in smaller groups
+# Upgrade pip and install packages
 RUN pip3 install --no-cache-dir --upgrade pip && \
     pip3 install --no-cache-dir numpy && \
     pip3 install --no-cache-dir torch==2.0.1+cu118 torchvision==0.15.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118 && \
@@ -20,10 +21,14 @@ FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
 # Install Python in the runtime stage
 RUN apt-get update && apt-get install -y \
     python3-pip \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy installed packages from builder
-COPY --from=builder /usr/local/lib/python3.8/dist-packages /usr/local/lib/python3.8/dist-packages
+RUN mkdir -p /usr/local/lib/python3.8/dist-packages
+COPY --from=builder /usr/local/lib/python3.* /usr/local/lib/python3.8/dist-packages
+
+# Copy binaries
 COPY --from=builder /usr/local/bin/vllm /usr/local/bin/vllm
 
 # Set up the Hugging Face token at runtime
